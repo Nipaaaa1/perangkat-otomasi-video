@@ -12,8 +12,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
+    "@ai-sdk/google": "^2.0.44",
     "@inquirer/prompts": "^8.0.1",
-    "neverthrow": "^8.2.0"
+    "ai": "^5.0.106",
+    "neverthrow": "^8.2.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
