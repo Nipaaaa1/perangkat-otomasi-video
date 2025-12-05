@@ -1,10 +1,11 @@
-import { select, input } from "@inquirer/prompts";
+import { select, } from "@inquirer/prompts";
 import path from "path";
 import { readFolder } from "./lib/read_folder.js";
 import { ResultAsync } from "neverthrow";
 import { readToBuffer } from "./lib/read_to_buffer.js";
 import { getTimestamp } from "./lib/ai/get_timestamp.js";
 import { createAIModel } from "./lib/ai/model.js";
+import { getApiKey } from "./lib/ai/get_api_key.js";
 
 const main = async () =>
   await readFolder()
@@ -19,11 +20,7 @@ const main = async () =>
     .map(file => path.join(process.cwd(), file as string))
     .andThen(path => readToBuffer(path))
     .andThen(buffer =>
-      ResultAsync.fromSafePromise(
-        input({
-          message: "Masukan Gemini API Key"
-        })
-      )
+      ResultAsync.fromSafePromise(getApiKey())
         .map(apiKey => ({
           model: createAIModel(apiKey),
           buffer
@@ -34,7 +31,7 @@ const main = async () =>
       buffer: data.buffer
     }))
     .match(
-      timestamp => console.log(timestamp),
+      timestamp => console.log(timestamp.object),
       error => {
         switch (error.tag) {
           case "ReadFolderError":
@@ -43,6 +40,8 @@ const main = async () =>
           case "ReadToBufferError":
             console.log("Error buffer")
             break;
+          case "GetTimestampError":
+            console.log(`AI Error, cause: ${error.cause}`)
         }
       })
 
